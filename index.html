@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุป KPI - บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</title>
+    
+    <!-- นำเข้า Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- นำเข้าฟอนต์ -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- นำเข้าไอคอน -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f3f4f6;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        h1, h2, h3, .stat-font { font-family: 'Prompt', sans-serif; }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* Print Settings */
+        @media print {
+            body { background-color: white !important; }
+            .no-print { display: none !important; }
+            .card-hover { 
+                transform: none !important; 
+                box-shadow: none !important; 
+                border: 1px solid #ddd !important;
+                break-inside: avoid;
+            }
+            .grid-container {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem !important;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8 min-h-screen text-gray-800">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <header class="bg-white rounded-2xl shadow-sm p-6 mb-6 flex flex-col md:flex-row justify-between items-center border-l-8 border-blue-600">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-gray-800">สรุปผลการดำเนินงาน (KPI)</h1>
+                <h2 class="text-lg text-gray-500 mt-1">บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</h2>
+            </div>
+            <div class="mt-4 md:mt-0 flex flex-col items-end gap-2">
+                <div class="bg-blue-100 text-blue-800 px-5 py-2 rounded-full font-bold text-sm md:text-base">
+                    <i class="far fa-calendar-alt mr-2"></i> <span id="currentPeriod">มกราคม 2026</span>
+                </div>
+                <button onclick="window.print()" class="no-print bg-gray-800 hover:bg-black text-white px-4 py-2 rounded-lg text-sm transition shadow-md flex items-center">
+                    <i class="fas fa-print mr-2"></i> พิมพ์รายงาน
+                </button>
+            </div>
+        </header>
+
+        <!-- Summary Box -->
+        <div class="bg-gradient-to-r from-slate-800 to-slate-700 text-white rounded-2xl p-6 mb-8 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="bg-white/10 p-3 rounded-full hidden sm:block">
+                    <i class="fas fa-chart-pie text-2xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold mb-2 stat-font">ภาพรวมผู้บริหาร</h3>
+                    <p id="executiveSummary" class="text-gray-200 leading-relaxed font-light">
+                        กำลังโหลดข้อมูล...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Grid Container -->
+        <div id="kpiContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 grid-container">
+            <!-- JavaScript will insert cards here -->
+        </div>
+
+        <div class="mt-8 text-center text-gray-400 text-xs">
+            Generated automatically by KPI Dashboard System
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ส่วนที่ 1: ข้อมูล (แก้ไขตรงนี้ได้เลย)
+        // ==========================================
+        const reportData = {
+            period: "มกราคม 2026",
+            summary: "ในเดือนมกราคม <strong>5 ตัวชี้วัดผ่านเกณฑ์</strong> (กำไรสุทธิ, สินค้าคงคลัง, ความปลอดภัย, ข้อผิดพลาดจัดส่ง, ไคเซ็น) โดยเฉพาะกำไรสุทธิทำได้ดีเยี่ยม (4.77%) ในขณะที่ยอดขายและการส่งมอบยังต้องเร่งปรับปรุง",
+            kpis: [
+                {
+                    id: 1,
+                    title: "ยอดขาย",
+                    actual: "13.0",
+                    unit: "ล้านบาท",
+                    target: "15.0 ล้านบาท",
+                    status: "fail", // pass, fail, waiting
+                    icon: "fa-coins",
+                    targetLabel: "เป้าหมาย"
+                },
+                {
+                    id: 2,
+                    title: "ข้อผิดพลาดจัดส่ง",
+                    actual: "1.35%",
+                    unit: "",
+                    target: "1.50%",
+                    status: "pass",
+                    icon: "fa-shipping-fast",
+                    targetLabel: "เป้าหมาย (น้อยกว่า)"
+                },
+                {
+                    id: 3,
+                    title: "กำไรสุทธิก่อนหักภาษี",
+                    actual: "4.77%",
+                    unit: "",
+                    target: "1.00%",
+                    status: "pass", // Updated to pass
+                    icon: "fa-percent",
+                    targetLabel: "เป้าหมาย (มากกว่า)"
+                },
+                {
+                    id: 4,
+                    title: "สินค้าคงคลังต่อยอดขาย",
+                    actual: "1.16",
+                    unit: "เดือน",
+                    target: "1.40 เดือน",
+                    status: "pass",
+                    icon: "fa-boxes",
+                    targetLabel: "เป้าหมาย (น้อยกว่า)"
+                },
+                {
+                    id: 5,
+                    title: "ส่งมอบภายใน 3 วัน",
+                    actual: "84.36%",
+                    unit: "",
+                    target: "95.00%",
+                    status: "fail",
+                    icon: "fa-stopwatch",
+                    targetLabel: "เป้าหมาย (มากกว่า)"
+                },
+                {
+                    id: 6,
+                    title: "อุบัติเหตุถึงขั้นหยุดงาน",
+                    actual: "0",
+                    unit: "ครั้ง",
+                    target: "0 ครั้ง",
+                    status: "pass",
+                    icon: "fa-hard-hat",
+                    targetLabel: "เป้าหมาย (ต้องเป็น)"
+                },
+                {
+                    id: 7,
+                    title: "อัตราการมาทำงาน",
+                    actual: "97.44%",
+                    unit: "",
+                    target: "98.00%",
+                    status: "fail",
+                    icon: "fa-user-clock",
+                    targetLabel: "เป้าหมาย (มากกว่า)"
+                },
+                {
+                    id: 8,
+                    title: "พนักงานส่งไคเซ็น",
+                    actual: "7",
+                    unit: "หัวข้อ",
+                    target: "5 หัวข้อ",
+                    status: "pass",
+                    icon: "fa-lightbulb",
+                    targetLabel: "เป้าหมาย (มากกว่า)"
+                }
+            ]
+        };
+
+        // ==========================================
+        // ส่วนที่ 2: การทำงานของระบบ (ไม่ต้องแก้)
+        // ==========================================
+        function renderDashboard() {
+            // Update Header & Summary
+            document.getElementById('currentPeriod').textContent = reportData.period;
+            document.getElementById('executiveSummary').innerHTML = reportData.summary;
+
+            const container = document.getElementById('kpiContainer');
+            container.innerHTML = '';
+
+            // Config for status styles
+            const styles = {
+                pass: { color: 'green', label: 'ผ่านเกณฑ์', bg: 'bg-green-100', text: 'text-green-600', border: 'border-green-500' },
+                fail: { color: 'red', label: 'ต่ำกว่าเป้า', bg: 'bg-red-100', text: 'text-red-600', border: 'border-red-500' },
+                waiting: { color: 'yellow', label: 'รอผล', bg: 'bg-yellow-100', text: 'text-yellow-600', border: 'border-yellow-400' }
+            };
+
+            // Loop through KPIs and create cards
+            reportData.kpis.forEach(kpi => {
+                const style = styles[kpi.status] || styles.waiting;
+                
+                const cardHTML = `
+                    <div class="bg-white rounded-xl shadow-sm p-6 card-hover border-t-4 ${style.border} transition-all duration-300 relative overflow-hidden">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="${style.bg} p-3 rounded-lg ${style.text}">
+                                <i class="fas ${kpi.icon} text-xl"></i>
+                            </div>
+                            <span class="${style.bg} ${style.text} text-xs font-bold px-2 py-1 rounded-full uppercase tracking-wide">
+                                ${style.label}
+                            </span>
+                        </div>
+                        <h3 class="text-gray-500 text-sm font-medium mb-1">${kpi.id}. ${kpi.title}</h3>
+                        <div class="flex items-baseline space-x-2">
+                            <span class="text-3xl font-bold text-gray-800 stat-font">${kpi.actual}</span>
+                            <span class="text-sm text-gray-500">${kpi.unit}</span>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between text-sm">
+                            <span class="text-gray-400">${kpi.targetLabel}</span>
+                            <span class="font-semibold text-gray-700">${kpi.target}</span>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHTML;
+            });
+        }
+
+        // Run when page loads
+        document.addEventListener('DOMContentLoaded', renderDashboard);
+    </script>
+</body>
+</html>

@@ -1,0 +1,640 @@
+
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>รายงานวิเคราะห์สินค้าคงคลัง</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+  <style>
+    body {
+      box-sizing: border-box;
+    }
+    * {
+      font-family: 'Noto Sans Thai', sans-serif;
+    }
+    .progress-bar {
+      transition: width 0.8s ease-out;
+    }
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+    .card-hover:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+    .tab-active {
+      position: relative;
+    }
+    .tab-active::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+      border-radius: 3px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    .gauge-container {
+      position: relative;
+      width: 120px;
+      height: 60px;
+      overflow: hidden;
+    }
+    .gauge-bg {
+      position: absolute;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: conic-gradient(from 180deg, #ef4444 0deg, #f59e0b 90deg, #22c55e 180deg);
+      clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%);
+      transform: rotate(180deg);
+    }
+    .gauge-needle {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 4px;
+      height: 50px;
+      background: #1e293b;
+      border-radius: 2px;
+      transform-origin: bottom center;
+      transition: transform 0.8s ease-out;
+    }
+    .gauge-center {
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 20px;
+      background: #1e293b;
+      border-radius: 50%;
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 overflow-auto">
+  <div id="app" class="min-h-full p-4 md:p-6 lg:p-8"><!-- Header -->
+   <header class="mb-6 md:mb-8 animate-fade-in">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+     <div class="flex items-center gap-4">
+      <div class="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl flex items-center justify-center shadow-lg">
+       <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+       </svg>
+      </div>
+      <div>
+       <h1 id="report-title" class="text-2xl md:text-3xl font-bold text-slate-900">รายงานวิเคราะห์สินค้าคงคลัง</h1>
+       <p id="report-period" class="text-slate-500 mt-1 text-sm md:text-base">ประจำเดือน มกราคม (ข้อมูล Dead Stock ณ สิ้นธันวาคม 2568)</p>
+      </div>
+     </div><!-- Tab Navigation -->
+     <div class="flex bg-white rounded-xl p-1.5 shadow-sm border border-slate-200"><button id="tab-overview" onclick="setActiveTab('overview')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 bg-blue-600 text-white shadow-sm"> 📊 ภาพรวม KPI </button> <button id="tab-details" onclick="setActiveTab('details')" class="tab-btn px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 text-slate-600 hover:bg-slate-50"> 📦 วิเคราะห์ Dead Stock </button>
+     </div>
+    </div>
+   </header><!-- Main Content -->
+   <main class="space-y-6"><!-- KPI Summary Cards -->
+    <section id="kpi-section" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 animate-fade-in" style="animation-delay: 0.1s"><!-- Main KPI Card - Inventory Days -->
+     <div class="card-hover bg-gradient-to-br from-emerald-50 to-green-50 p-5 rounded-2xl shadow-sm border border-emerald-100 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-100 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50"></div>
+      <div class="relative">
+       <div class="flex justify-between items-start mb-3"><span class="text-xs font-semibold text-emerald-700 bg-emerald-100 px-2.5 py-1 rounded-full">KPI หลัก</span>
+        <div class="w-10 h-10 bg-emerald-500 rounded-xl flex items-center justify-center shadow-md">
+         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+         </svg>
+        </div>
+       </div>
+       <p class="text-sm font-medium text-slate-600">Inventory Days</p>
+       <div class="flex items-baseline gap-2 mt-1">
+        <h2 class="text-4xl font-bold text-slate-900">1.16</h2><span class="text-sm font-medium text-slate-500">เดือน</span>
+       </div>
+       <div class="mt-3 pt-3 border-t border-emerald-200">
+        <div class="flex items-center gap-2"><span class="text-xs text-slate-500">เป้าหมาย:</span> <span class="text-sm font-semibold text-slate-700">&lt; 1.40 เดือน</span>
+        </div>
+        <p class="text-emerald-600 font-semibold text-sm mt-1 flex items-center gap-1">
+         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+         </svg> ดีกว่าเป้าหมาย 17%</p>
+       </div>
+      </div>
+     </div><!-- Sales Card -->
+     <div class="card-hover bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-20 h-20 bg-blue-50 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <div class="relative">
+       <div class="flex justify-between items-start mb-3"><span class="text-xs font-semibold text-blue-700 bg-blue-100 px-2.5 py-1 rounded-full">ยอดขาย</span>
+        <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
+         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+         </svg>
+        </div>
+       </div>
+       <p class="text-sm font-medium text-slate-600">ยอดขายรวม (เดือน)</p>
+       <h2 class="text-2xl font-bold text-slate-900 mt-1">฿11.91M</h2>
+       <p class="text-slate-500 text-xs mt-2">11,910,843.86 บาท</p>
+      </div>
+     </div><!-- Inventory Value Card -->
+     <div class="card-hover bg-white p-5 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-20 h-20 bg-amber-50 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+      <div class="relative">
+       <div class="flex justify-between items-start mb-3"><span class="text-xs font-semibold text-amber-700 bg-amber-100 px-2.5 py-1 rounded-full">สินค้าคงคลัง</span>
+        <div class="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
+         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+         </svg>
+        </div>
+       </div>
+       <p class="text-sm font-medium text-slate-600">มูลค่าคงคลังรวม</p>
+       <h2 class="text-2xl font-bold text-slate-900 mt-1">฿13.80M</h2>
+       <p class="text-slate-500 text-xs mt-2">13,796,185.96 บาท</p>
+      </div>
+     </div><!-- Dead Stock Summary Card -->
+     <div class="card-hover bg-gradient-to-br from-red-50 to-orange-50 p-5 rounded-2xl shadow-sm border border-red-100 relative overflow-hidden">
+      <div class="absolute top-0 right-0 w-24 h-24 bg-red-100 rounded-full -translate-y-1/2 translate-x-1/2 opacity-50"></div>
+      <div class="relative">
+       <div class="flex justify-between items-start mb-3"><span class="text-xs font-semibold text-red-700 bg-red-100 px-2.5 py-1 rounded-full">⚠️ Dead Stock</span>
+        <div class="w-10 h-10 bg-gradient-to-br from-red-500 to-red-600 rounded-xl flex items-center justify-center shadow-md">
+         <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+         </svg>
+        </div>
+       </div>
+       <p class="text-sm font-medium text-slate-600">มูลค่า Dead Stock</p>
+       <h2 class="text-2xl font-bold text-slate-900 mt-1">฿4.72M</h2>
+       <div class="flex items-center justify-between mt-2"><span class="text-slate-500 text-xs">2,866 รายการ</span> <span class="text-red-600 font-semibold text-sm">34.2%</span>
+       </div>
+      </div>
+     </div>
+    </section><!-- Overview Section -->
+    <section id="overview-content" class="space-y-6"><!-- Performance Gauge & Summary -->
+     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in" style="animation-delay: 0.2s"><!-- Gauge Card -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+       <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2"><span class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+         <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+         </svg></span> ประสิทธิภาพการจัดการสินค้า</h3>
+       <div class="flex justify-center mb-6">
+        <div class="gauge-container">
+         <div class="gauge-bg"></div>
+         <div class="gauge-needle" style="transform: rotate(-50deg)"></div>
+         <div class="gauge-center"></div>
+        </div>
+       </div>
+       <div class="text-center">
+        <div class="text-3xl font-bold text-emerald-600">
+         82.9%
+        </div>
+        <p class="text-sm text-slate-500 mt-1">คะแนนประสิทธิภาพโดยรวม</p>
+       </div>
+       <div class="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
+        <div class="p-2 bg-red-50 rounded-lg">
+         <div class="w-3 h-3 bg-red-500 rounded-full mx-auto mb-1"></div><span class="text-slate-600">ต่ำ</span>
+        </div>
+        <div class="p-2 bg-amber-50 rounded-lg">
+         <div class="w-3 h-3 bg-amber-500 rounded-full mx-auto mb-1"></div><span class="text-slate-600">ปานกลาง</span>
+        </div>
+        <div class="p-2 bg-emerald-50 rounded-lg">
+         <div class="w-3 h-3 bg-emerald-500 rounded-full mx-auto mb-1"></div><span class="text-slate-600">ดี</span>
+        </div>
+       </div>
+      </div><!-- Quick Stats -->
+      <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+       <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2"><span class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
+         <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+         </svg></span> สรุปตัวเลขสำคัญ</h3>
+       <div class="grid grid-cols-1 md:grid-cols-2 gap-4"><!-- Inventory Turnover -->
+        <div class="p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl">
+         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-600">อัตราหมุนเวียนสินค้า</span> <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">รายเดือน</span>
+         </div>
+         <div class="text-2xl font-bold text-slate-900">
+          0.86 <span class="text-sm font-normal text-slate-500">รอบ</span>
+         </div>
+         <div class="mt-2 w-full bg-slate-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-blue-500 to-indigo-500 h-2 rounded-full progress-bar" style="width: 86%"></div>
+         </div>
+        </div><!-- Health Stock Ratio -->
+        <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl">
+         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-600">สินค้าคงคลังที่ดี</span> <span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full">Active</span>
+         </div>
+         <div class="text-2xl font-bold text-slate-900">
+          65.8% <span class="text-sm font-normal text-slate-500">ของมูลค่ารวม</span>
+         </div>
+         <div class="mt-2 w-full bg-slate-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full progress-bar" style="width: 65.8%"></div>
+         </div>
+        </div><!-- Dead Stock Impact -->
+        <div class="p-4 bg-gradient-to-r from-red-50 to-orange-50 rounded-xl">
+         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-600">Dead Stock ต่อคงคลัง</span> <span class="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">ต้องดูแล</span>
+         </div>
+         <div class="text-2xl font-bold text-slate-900">
+          34.2% <span class="text-sm font-normal text-slate-500">มูลค่ารวม</span>
+         </div>
+         <div class="mt-2 w-full bg-slate-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-red-500 to-orange-500 h-2 rounded-full progress-bar" style="width: 34.2%"></div>
+         </div>
+        </div><!-- Avg Days in Stock -->
+        <div class="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl">
+         <div class="flex items-center justify-between mb-2"><span class="text-sm text-slate-600">วันเฉลี่ยในคลัง</span> <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Dead Stock</span>
+         </div>
+         <div class="text-2xl font-bold text-slate-900">
+          245 <span class="text-sm font-normal text-slate-500">วัน</span>
+         </div>
+         <div class="mt-2 w-full bg-slate-200 rounded-full h-2">
+          <div class="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full progress-bar" style="width: 67%"></div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div><!-- Recommendations -->
+     <div class="bg-gradient-to-r from-blue-600 to-indigo-700 p-6 rounded-2xl shadow-lg text-white animate-fade-in" style="animation-delay: 0.3s">
+      <h3 class="text-lg font-semibold mb-4 flex items-center gap-2">
+       <svg class="w-5 h-5" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+       </svg> 💡 ข้อเสนอแนะ</h3>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+       <div class="bg-white/10 backdrop-blur p-4 rounded-xl">
+        <div class="text-yellow-300 font-semibold mb-2">
+         🎯 เร่งด่วน
+        </div>
+        <p class="text-sm text-blue-100">สินค้า Dead Stock 31-90 วัน มีมูลค่าสูงสุด ควรจัดโปรโมชั่นเคลียร์</p>
+       </div>
+       <div class="bg-white/10 backdrop-blur p-4 rounded-xl">
+        <div class="text-emerald-300 font-semibold mb-2">
+         📊 แนะนำ
+        </div>
+        <p class="text-sm text-blue-100">ทบทวน Min-Max สินค้า เพื่อลดการสั่งซื้อเกินความจำเป็น</p>
+       </div>
+       <div class="bg-white/10 backdrop-blur p-4 rounded-xl">
+        <div class="text-orange-300 font-semibold mb-2">
+         ⚡ ติดตาม
+        </div>
+        <p class="text-sm text-blue-100">สินค้าเกิน 1 ปี ควรพิจารณาตัดจำหน่ายหรือบริจาค</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Dead Stock Details Section -->
+    <section id="details-content" class="hidden space-y-6"><!-- Aging Analysis -->
+     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 animate-fade-in">
+      <h3 class="text-lg font-semibold text-slate-800 mb-6 flex items-center gap-2"><span class="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+        <svg class="w-4 h-4 text-red-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg></span> การวิเคราะห์ Dead Stock ตามช่วงอายุ</h3>
+      <div class="space-y-4"><!-- 0-30 Days -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-100 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold">
+           39
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">0 - 30 วัน</h4>
+           <p class="text-sm text-slate-500">สินค้าใหม่ยังไม่ขาย</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿90,111.31</span> <span class="font-semibold text-emerald-600">1.91%</span>
+          </div>
+          <div class="w-full bg-emerald-200 rounded-full h-3">
+           <div class="bg-emerald-500 h-3 rounded-full progress-bar" style="width: 1.91%"></div>
+          </div>
+         </div><span class="text-xs bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full font-medium">ยังไม่น่ากังวล</span>
+        </div>
+       </div><!-- 31-90 Days -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-yellow-50 to-amber-50 border border-yellow-200 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-yellow-500 rounded-xl flex items-center justify-center text-white font-bold">
+           611
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">31 - 90 วัน</h4>
+           <p class="text-sm text-slate-500">⚠️ มูลค่าสูงสุด!</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿1,590,516.45</span> <span class="font-semibold text-yellow-600">33.73%</span>
+          </div>
+          <div class="w-full bg-yellow-200 rounded-full h-3">
+           <div class="bg-yellow-500 h-3 rounded-full progress-bar" style="width: 33.73%"></div>
+          </div>
+         </div><span class="text-xs bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full font-medium">ควรจัดโปรโมชั่น</span>
+        </div>
+       </div><!-- 91-180 Days -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-orange-50 to-amber-50 border border-orange-100 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-orange-400 rounded-xl flex items-center justify-center text-white font-bold">
+           394
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">91 - 180 วัน</h4>
+           <p class="text-sm text-slate-500">สินค้าค้างนาน</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿740,333.56</span> <span class="font-semibold text-orange-600">15.70%</span>
+          </div>
+          <div class="w-full bg-orange-200 rounded-full h-3">
+           <div class="bg-orange-400 h-3 rounded-full progress-bar" style="width: 15.70%"></div>
+          </div>
+         </div><span class="text-xs bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">ต้องดูแล</span>
+        </div>
+       </div><!-- 181-365 Days -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-orange-500 rounded-xl flex items-center justify-center text-white font-bold">
+           487
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">181 - 365 วัน</h4>
+           <p class="text-sm text-slate-500">เกือบครบ 1 ปี</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿960,603.01</span> <span class="font-semibold text-orange-600">20.37%</span>
+          </div>
+          <div class="w-full bg-orange-200 rounded-full h-3">
+           <div class="bg-orange-500 h-3 rounded-full progress-bar" style="width: 20.37%"></div>
+          </div>
+         </div><span class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">เร่งเคลียร์</span>
+        </div>
+       </div><!-- 1-2 Years -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-red-50 to-rose-50 border border-red-200 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-red-400 rounded-xl flex items-center justify-center text-white font-bold">
+           630
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">1 - 2 ปี</h4>
+           <p class="text-sm text-slate-500">จำนวนรายการมากสุด</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿688,044.97</span> <span class="font-semibold text-red-600">14.59%</span>
+          </div>
+          <div class="w-full bg-red-200 rounded-full h-3">
+           <div class="bg-red-400 h-3 rounded-full progress-bar" style="width: 14.59%"></div>
+          </div>
+         </div><span class="text-xs bg-red-100 text-red-700 px-3 py-1 rounded-full font-medium">พิจารณาตัดจำหน่าย</span>
+        </div>
+       </div><!-- 2-3 Years -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-red-50 to-rose-100 border border-red-300 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-red-500 rounded-xl flex items-center justify-center text-white font-bold">
+           301
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">2 - 3 ปี</h4>
+           <p class="text-sm text-slate-500">สินค้าเก่ามาก</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿383,821.24</span> <span class="font-semibold text-red-600">8.14%</span>
+          </div>
+          <div class="w-full bg-red-200 rounded-full h-3">
+           <div class="bg-red-500 h-3 rounded-full progress-bar" style="width: 8.14%"></div>
+          </div>
+         </div><span class="text-xs bg-red-200 text-red-800 px-3 py-1 rounded-full font-medium">ควรตัดจำหน่าย</span>
+        </div>
+       </div><!-- > 3 Years -->
+       <div class="group p-4 rounded-xl bg-gradient-to-r from-red-100 to-rose-100 border border-red-400 hover:shadow-md transition-all">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+         <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-red-700 rounded-xl flex items-center justify-center text-white font-bold">
+           404
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">&gt; 3 ปี</h4>
+           <p class="text-sm text-slate-500">⛔ ต้องจัดการด่วน</p>
+          </div>
+         </div>
+         <div class="flex-1 max-w-md">
+          <div class="flex justify-between text-sm mb-1"><span class="text-slate-600">฿261,647.82</span> <span class="font-semibold text-red-700">5.55%</span>
+          </div>
+          <div class="w-full bg-red-200 rounded-full h-3">
+           <div class="bg-red-700 h-3 rounded-full progress-bar" style="width: 5.55%"></div>
+          </div>
+         </div><span class="text-xs bg-red-300 text-red-900 px-3 py-1 rounded-full font-medium">ตัดจำหน่ายทันที</span>
+        </div>
+       </div>
+      </div>
+     </div><!-- Visual Chart -->
+     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in" style="animation-delay: 0.2s"><!-- Pie Chart Representation -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+       <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2"><span class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
+         <svg class="w-4 h-4 text-purple-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+         </svg></span> สัดส่วน Dead Stock ตามมูลค่า</h3>
+       <div class="relative w-48 h-48 mx-auto mb-6">
+        <svg viewbox="0 0 100 100" class="transform -rotate-90 w-full h-full"><!-- Background circle --> <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" stroke-width="20" /> <!-- 0-30 days: 1.91% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#22c55e" stroke-width="20" stroke-dasharray="4.8 251.2" stroke-dashoffset="0" /> <!-- 31-90 days: 33.73% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#eab308" stroke-width="20" stroke-dasharray="84.7 171.3" stroke-dashoffset="-4.8" /> <!-- 91-180 days: 15.70% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#fb923c" stroke-width="20" stroke-dasharray="39.4 216.6" stroke-dashoffset="-89.5" /> <!-- 181-365 days: 20.37% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#f97316" stroke-width="20" stroke-dasharray="51.2 204.8" stroke-dashoffset="-128.9" /> <!-- 1-2 years: 14.59% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#f87171" stroke-width="20" stroke-dasharray="36.6 219.4" stroke-dashoffset="-180.1" /> <!-- 2-3 years: 8.14% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#ef4444" stroke-width="20" stroke-dasharray="20.4 235.6" stroke-dashoffset="-216.7" /> <!-- > 3 years: 5.55% --> <circle cx="50" cy="50" r="40" fill="none" stroke="#b91c1c" stroke-width="20" stroke-dasharray="13.9 242.1" stroke-dashoffset="-237.1" />
+        </svg>
+        <div class="absolute inset-0 flex items-center justify-center">
+         <div class="text-center">
+          <div class="text-2xl font-bold text-slate-800">
+           2,866
+          </div>
+          <div class="text-xs text-slate-500">
+           รายการ
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="flex items-center gap-2">
+         <div class="w-3 h-3 rounded-full bg-emerald-500"></div><span>0-30 วัน (1.91%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-3 h-3 rounded-full bg-yellow-500"></div><span>31-90 วัน (33.73%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-3 h-3 rounded-full bg-orange-400"></div><span>91-180 วัน (15.70%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-3 h-3 rounded-full bg-orange-500"></div><span>181-365 วัน (20.37%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-3 h-3 rounded-full bg-red-400"></div><span>1-2 ปี (14.59%)</span>
+        </div>
+        <div class="flex items-center gap-2">
+         <div class="w-3 h-3 rounded-full bg-red-500"></div><span>2-3 ปี (8.14%)</span>
+        </div>
+        <div class="flex items-center gap-2 col-span-2">
+         <div class="w-3 h-3 rounded-full bg-red-700"></div><span>&gt; 3 ปี (5.55%)</span>
+        </div>
+       </div>
+      </div><!-- Action Summary -->
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+       <h3 class="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2"><span class="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+         <svg class="w-4 h-4 text-teal-600" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+         </svg></span> แผนการดำเนินการ</h3>
+       <div class="space-y-4">
+        <div class="p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
+         <div class="flex items-start gap-3">
+          <div class="w-8 h-8 bg-yellow-500 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+           1
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">จัดโปรโมชั่นลดราคา</h4>
+           <p class="text-sm text-slate-600 mt-1">สินค้า 31-90 วัน (611 รายการ, ฿1.59M)</p>
+           <p class="text-xs text-yellow-600 mt-2">🎯 เป้าหมาย: ลดมูลค่า 50% ภายใน 30 วัน</p>
+          </div>
+         </div>
+        </div>
+        <div class="p-4 bg-orange-50 border border-orange-200 rounded-xl">
+         <div class="flex items-start gap-3">
+          <div class="w-8 h-8 bg-orange-500 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+           2
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">Flash Sale + Bundle</h4>
+           <p class="text-sm text-slate-600 mt-1">สินค้า 91-365 วัน (881 รายการ, ฿1.70M)</p>
+           <p class="text-xs text-orange-600 mt-2">📦 รวมขายกับสินค้าขายดี</p>
+          </div>
+         </div>
+        </div>
+        <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
+         <div class="flex items-start gap-3">
+          <div class="w-8 h-8 bg-red-500 rounded-lg flex items-center justify-center text-white flex-shrink-0">
+           3
+          </div>
+          <div>
+           <h4 class="font-semibold text-slate-800">พิจารณาตัดจำหน่าย</h4>
+           <p class="text-sm text-slate-600 mt-1">สินค้า &gt; 1 ปี (1,335 รายการ, ฿1.33M)</p>
+           <p class="text-xs text-red-600 mt-2">⚠️ บริจาค/ขายทุน/ตัดจำหน่าย</p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section>
+   </main><!-- Footer -->
+   <footer class="mt-8 pt-6 border-t border-slate-200 text-center text-sm text-slate-500">
+    <p>รายงานสร้างโดยระบบวิเคราะห์สินค้าคงคลังอัตโนมัติ • ข้อมูล ณ วันที่ 31 ธันวาคม 2568</p>
+   </footer>
+  </div>
+  <script>
+    // Default configuration
+    const defaultConfig = {
+      report_title: 'รายงานวิเคราะห์สินค้าคงคลัง',
+      report_period: 'ประจำเดือน มกราคม (ข้อมูล Dead Stock ณ สิ้นธันวาคม 2568)',
+      primary_color: '#2563eb',
+      secondary_color: '#f8fafc',
+      text_color: '#1e293b',
+      accent_color: '#10b981',
+      highlight_color: '#ef4444'
+    };
+
+    let config = { ...defaultConfig };
+    let activeTab = 'overview';
+
+    // Tab switching function
+    function setActiveTab(tab) {
+      activeTab = tab;
+      
+      const overviewBtn = document.getElementById('tab-overview');
+      const detailsBtn = document.getElementById('tab-details');
+      const overviewContent = document.getElementById('overview-content');
+      const detailsContent = document.getElementById('details-content');
+      
+      if (tab === 'overview') {
+        overviewBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+        overviewBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+        detailsBtn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+        detailsBtn.classList.add('text-slate-600', 'hover:bg-slate-50');
+        overviewContent.classList.remove('hidden');
+        detailsContent.classList.add('hidden');
+      } else {
+        detailsBtn.classList.add('bg-blue-600', 'text-white', 'shadow-sm');
+        detailsBtn.classList.remove('text-slate-600', 'hover:bg-slate-50');
+        overviewBtn.classList.remove('bg-blue-600', 'text-white', 'shadow-sm');
+        overviewBtn.classList.add('text-slate-600', 'hover:bg-slate-50');
+        detailsContent.classList.remove('hidden');
+        overviewContent.classList.add('hidden');
+      }
+    }
+
+    // Config change handler
+    async function onConfigChange(newConfig) {
+      const title = newConfig.report_title || defaultConfig.report_title;
+      const period = newConfig.report_period || defaultConfig.report_period;
+      
+      document.getElementById('report-title').textContent = title;
+      document.getElementById('report-period').textContent = period;
+    }
+
+    // Map to capabilities
+    function mapToCapabilities(cfg) {
+      return {
+        recolorables: [
+          {
+            get: () => cfg.primary_color || defaultConfig.primary_color,
+            set: (value) => {
+              cfg.primary_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ primary_color: value });
+            }
+          },
+          {
+            get: () => cfg.secondary_color || defaultConfig.secondary_color,
+            set: (value) => {
+              cfg.secondary_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ secondary_color: value });
+            }
+          },
+          {
+            get: () => cfg.text_color || defaultConfig.text_color,
+            set: (value) => {
+              cfg.text_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ text_color: value });
+            }
+          },
+          {
+            get: () => cfg.accent_color || defaultConfig.accent_color,
+            set: (value) => {
+              cfg.accent_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ accent_color: value });
+            }
+          },
+          {
+            get: () => cfg.highlight_color || defaultConfig.highlight_color,
+            set: (value) => {
+              cfg.highlight_color = value;
+              if (window.elementSdk) window.elementSdk.setConfig({ highlight_color: value });
+            }
+          }
+        ],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    // Map to edit panel values
+    function mapToEditPanelValues(cfg) {
+      return new Map([
+        ['report_title', cfg.report_title || defaultConfig.report_title],
+        ['report_period', cfg.report_period || defaultConfig.report_period]
+      ]);
+    }
+
+    // Initialize SDK
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Initial render
+    onConfigChange(config);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ca19b0441cdfe1f',t:'MTc3MDQ1Mzg2OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>

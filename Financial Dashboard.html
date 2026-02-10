@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard สรุปผลการดำเนินงาน - ม.ค. 2569</title>
+    <!-- Google Fonts: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .custom-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        /* Print Styling */
+        @media print {
+            body { background-color: white; }
+            .no-print { display: none; }
+            .card-hover { box-shadow: none; border: 1px solid #ddd; }
+            .h-80 { height: auto; overflow: visible; }
+            .shadow-sm { box-shadow: none; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-6 text-gray-800">
+
+    <!-- Header & Action Button -->
+    <div class="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="bg-white rounded-xl shadow-sm p-6 w-full flex flex-col md:flex-row justify-between items-center border-l-4 border-blue-600">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">สรุปรายงานกำไรสุทธิก่อนหักภาษี</h1>
+                <p class="text-gray-500">บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</p>
+            </div>
+            <div class="mt-4 md:mt-0 flex items-center gap-3">
+                <div class="bg-blue-50 text-blue-800 px-4 py-2 rounded-lg font-semibold text-sm">
+                    <i class="far fa-calendar-alt mr-2"></i>มกราคม 2569
+                </div>
+                <button onclick="window.print()" class="no-print bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition shadow-lg flex items-center">
+                    <i class="fas fa-print mr-2"></i> พิมพ์ / PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Revenue -->
+        <div class="bg-white rounded-xl shadow-sm p-6 card-hover border-t-4 border-blue-500">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">รายได้รวม</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">11,084,152.39</h3>
+                    <p class="text-xs text-gray-400 mt-1">บาท</p>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-full text-blue-600">
+                    <i class="fas fa-wallet text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- COGS -->
+        <div class="bg-white rounded-xl shadow-sm p-6 card-hover border-t-4 border-red-400">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">ต้นทุนขายรวม</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">9,250,000.43</h3>
+                    <p class="text-xs text-red-500 mt-1">83.45% ของรายได้</p>
+                </div>
+                <div class="p-3 bg-red-50 rounded-full text-red-500">
+                    <i class="fas fa-cubes text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gross Profit -->
+        <div class="bg-white rounded-xl shadow-sm p-6 card-hover border-t-4 border-orange-400">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">กำไรขั้นต้น</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mt-1">1,834,151.96</h3>
+                    <p class="text-xs text-orange-500 mt-1">16.55% Margin</p>
+                </div>
+                <div class="p-3 bg-orange-50 rounded-full text-orange-500">
+                    <i class="fas fa-coins text-xl"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Net Profit -->
+        <div class="bg-white rounded-xl shadow-sm p-6 card-hover border-t-4 border-green-500 bg-gradient-to-br from-white to-green-50">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-xs text-gray-500 uppercase font-semibold">กำไรก่อนหักภาษี</p>
+                    <h3 class="text-2xl font-bold text-green-700 mt-1">528,949.53</h3>
+                    <span class="inline-block mt-2 bg-green-200 text-green-800 text-xs font-bold px-2 py-0.5 rounded-full border border-green-300">
+                        4.77% Net Margin
+                    </span>
+                </div>
+                <div class="p-3 bg-white rounded-full text-green-600 shadow-sm">
+                    <i class="fas fa-chart-line text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Layout (Fixed Sizing) -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <!-- Donut Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6 lg:col-span-2">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                <i class="fas fa-chart-pie mr-2 text-blue-500"></i> โครงสร้างค่าใช้จ่ายดำเนินงาน
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 h-auto md:h-64 items-center">
+                <!-- Adjusted Container for Chart -->
+                <div class="relative w-full h-64 md:h-full flex justify-center items-center p-2">
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                <!-- Legend -->
+                <div class="flex flex-col justify-center space-y-3 text-sm pr-4">
+                    <div class="flex items-center justify-between p-3 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition">
+                        <span class="flex items-center"><span class="w-3 h-3 bg-indigo-500 rounded-full mr-2"></span>พนักงาน</span>
+                        <span class="font-bold text-indigo-900">573,093.57</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-amber-50 rounded-lg hover:bg-amber-100 transition">
+                        <span class="flex items-center"><span class="w-3 h-3 bg-amber-500 rounded-full mr-2"></span>ดำเนินงานอื่น</span>
+                        <span class="font-bold text-amber-900">707,989.40</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition">
+                        <span class="flex items-center"><span class="w-3 h-3 bg-emerald-500 rounded-full mr-2"></span>สาธารณูปโภค</span>
+                        <span class="font-bold text-emerald-900">24,119.46</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 5 Chart -->
+        <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="text-lg font-bold text-gray-700 mb-4 border-b pb-2 flex items-center">
+                <i class="fas fa-list-ol mr-2 text-amber-500"></i> Top 5 ค่าใช้จ่ายดำเนินงานอื่น
+            </h3>
+            <div class="relative h-64 w-full">
+                <canvas id="topOtherExpensesChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detailed Lists Breakdown (Updated Data) -->
+    <div class="max-w-7xl mx-auto mb-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-search-dollar mr-2 text-gray-600"></i> รายละเอียดค่าใช้จ่าย (Detailed Breakdown)
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <!-- List 1: Employee -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div class="bg-indigo-50 p-4 border-b border-indigo-100">
+                    <h3 class="font-bold text-indigo-800 flex items-center"><i class="fas fa-users mr-2"></i> พนักงานและสวัสดิการ</h3>
+                </div>
+                <div class="p-0 h-96 overflow-y-auto custom-scroll text-sm">
+                    <table class="w-full text-left">
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">เงินเดือน-พนักงาน</td><td class="p-3 text-right font-medium">316,040.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าล่วงเวลา (OT)</td><td class="p-3 text-right font-medium">82,409.41</td></tr>
+                            <tr class="bg-yellow-50 hover:bg-yellow-100"><td class="p-3 text-gray-800 font-semibold">ค่าอบรมสัมมนา</td><td class="p-3 text-right font-bold text-yellow-700">68,635.51</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">โบนัสพนักงาน</td><td class="p-3 text-right font-medium">50,000.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าเงินเพิ่มพิเศษ</td><td class="p-3 text-right font-medium">22,000.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">เงินสมทบประกันสังคม</td><td class="p-3 text-right font-medium">14,913.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">เงินสมทบกองทุนทดแทน</td><td class="p-3 text-right font-medium">11,400.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่านายหน้า-พนักงาน</td><td class="p-3 text-right font-medium">955.65</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าอาหาร-เครื่องดื่ม</td><td class="p-3 text-right font-medium">2,240.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าเบี้ยเลี้ยง-พนักงาน</td><td class="p-3 text-right font-medium">4,500.00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- List 2: Operations -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div class="bg-amber-50 p-4 border-b border-amber-100">
+                    <h3 class="font-bold text-amber-800 flex items-center"><i class="fas fa-cogs mr-2"></i> ดำเนินงานอื่น</h3>
+                </div>
+                <div class="p-0 h-96 overflow-y-auto custom-scroll text-sm">
+                    <table class="w-full text-left">
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="bg-amber-50/50 hover:bg-amber-100"><td class="p-3 text-gray-800 font-semibold">เงินเดือน-ผู้บริหาร</td><td class="p-3 text-right font-bold text-amber-700">225,000.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ดอกเบี้ยจ่าย-สถาบันฯ</td><td class="p-3 text-right font-medium">103,209.96</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าน้ำมันเชื้อเพลิง</td><td class="p-3 text-right font-medium">91,255.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าเช่าที่ดิน/สนง.</td><td class="p-3 text-right font-medium">60,000.00</td></tr>
+                            <tr class="bg-gray-50"><td class="p-3 text-gray-800 font-semibold" colspan="2">ค่าเสื่อมราคา (รวม ~127k)</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-500 pl-6">- ยานพาหนะ</td><td class="p-3 text-right text-gray-500 text-xs">52,981.17</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-500 pl-6">- อาคาร</td><td class="p-3 text-right text-gray-500 text-xs">31,336.35</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-500 pl-6">- เครื่องใช้สนง./คอมฯ/อื่นๆ</td><td class="p-3 text-right text-gray-500 text-xs">42,657.10</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าระวางและขนส่ง</td><td class="p-3 text-right font-medium">33,240.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าซ่อมแซม-รถยนต์</td><td class="p-3 text-right font-medium">3,350.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าส่งเสริมการขาย</td><td class="p-3 text-right font-medium">7,344.00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- List 3: Utilities & Others -->
+            <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div class="bg-emerald-50 p-4 border-b border-emerald-100">
+                    <h3 class="font-bold text-emerald-800 flex items-center"><i class="fas fa-bolt mr-2"></i> สาธารณูปโภค & อื่นๆ</h3>
+                </div>
+                <div class="p-0 h-96 overflow-y-auto custom-scroll text-sm">
+                    <table class="w-full text-left">
+                        <tbody class="divide-y divide-gray-100">
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าโทรศัพท์</td><td class="p-3 text-right font-medium">13,183.98</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าไฟฟ้า</td><td class="p-3 text-right font-medium">6,234.34</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">อินเทอร์เน็ต</td><td class="p-3 text-right font-medium">2,708.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าน้ำประปา</td><td class="p-3 text-right font-medium">1,993.14</td></tr>
+                            <tr class="bg-gray-100"><td colspan="2" class="p-2 text-xs font-bold text-gray-500">ค่าใช้จ่ายอื่นๆ (ในหมวดดำเนินงานอื่น)</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ประกันภัย</td><td class="p-3 text-right font-medium">17,387.11</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">วัสดุอุปกรณ์สำนักงาน</td><td class="p-3 text-right font-medium">15,237.94</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ภาษี-ยานพาหนะ</td><td class="p-3 text-right font-medium">10,153.65</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าตรวจสอบบัญชี/กฎหมาย</td><td class="p-3 text-right font-medium">9,833.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าธรรมเนียมธนาคาร</td><td class="p-3 text-right font-medium">1,006.00</td></tr>
+                            <tr class="hover:bg-gray-50"><td class="p-3 text-gray-600">ค่าเบ็ดเตล็ด</td><td class="p-3 text-right font-medium">3,572.00</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analysis Cards -->
+    <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 pb-8">
+        <!-- Decreased -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-green-400">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-arrow-down text-green-500 mr-2 bg-green-100 p-2 rounded-full text-sm"></i>
+                ค่าใช้จ่ายที่ลดลง (Positive)
+            </h3>
+            <ul class="space-y-3">
+                <li class="flex items-start bg-green-50 p-3 rounded-lg">
+                    <span class="flex-shrink-0 h-6 w-6 rounded-full bg-green-200 text-green-700 flex items-center justify-center text-xs mr-3 font-bold">1</span>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">ค่าน้ำ - ค่าไฟฟ้า</p>
+                        <p class="text-xs text-gray-600">ลดลงจากเดือนก่อน ~5,200 บาท</p>
+                    </div>
+                </li>
+                <li class="flex items-start bg-green-50 p-3 rounded-lg">
+                    <span class="flex-shrink-0 h-6 w-6 rounded-full bg-green-200 text-green-700 flex items-center justify-center text-xs mr-3 font-bold">2</span>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">ค่าน้ำมันเชื้อเพลิง</p>
+                        <p class="text-xs text-gray-600">ลดลงประมาณ 9,000 บาท</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Increased -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-400">
+            <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center">
+                <i class="fas fa-arrow-up text-red-500 mr-2 bg-red-100 p-2 rounded-full text-sm"></i>
+                ค่าใช้จ่ายที่เพิ่มขึ้น (Negative/Special)
+            </h3>
+            <ul class="space-y-3">
+                <li class="flex items-start bg-red-50 p-3 rounded-lg">
+                    <span class="flex-shrink-0 h-6 w-6 rounded-full bg-red-200 text-red-700 flex items-center justify-center text-xs mr-3 font-bold">1</span>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">ค่าเงินสมทบกองทุนทดแทน</p>
+                        <p class="text-xs text-gray-600">จำนวน 11,400 บาท</p>
+                    </div>
+                </li>
+                <li class="flex items-start bg-red-50 p-3 rounded-lg">
+                    <span class="flex-shrink-0 h-6 w-6 rounded-full bg-red-200 text-red-700 flex items-center justify-center text-xs mr-3 font-bold">2</span>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-800">ค่าอบรมสัมมนาพนักงาน (สูงพิเศษ)</p>
+                        <p class="text-xs text-gray-600">จำนวน <span class="font-bold">68,635.51 บาท</span></p>
+                        <p class="text-[10px] text-gray-500 mt-1">*หลักสูตร Customer Experience & Service Design</p>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    
+    <footer class="text-center text-xs text-gray-400 pb-6 no-print">
+        <p>© 2026 บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</p>
+    </footer>
+
+    <!-- Chart Scripts -->
+    <script>
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+        };
+
+        // Donut Chart
+        new Chart(document.getElementById('expenseChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['พนักงาน/สวัสดิการ', 'สาธารณูปโภค', 'ดำเนินงานอื่นๆ'],
+                datasets: [{
+                    data: [573093.57, 24119.46, 707989.40],
+                    backgroundColor: ['#6366f1', '#10b981', '#f59e0b'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: { 
+                ...commonOptions, 
+                cutout: '70%', 
+                layout: {
+                    padding: 10 // Added padding to prevent cutoff
+                },
+                plugins: { 
+                    legend: { display: false } 
+                } 
+            }
+        });
+
+        // Bar Chart - Updated with precise Top 5 from new image
+        new Chart(document.getElementById('topOtherExpensesChart'), {
+            type: 'bar',
+            indexAxis: 'y',
+            data: {
+                labels: ['เงินเดือนผู้บริหาร', 'ดอกเบี้ยจ่าย-สถาบันฯ', 'ค่าน้ำมันเชื้อเพลิง', 'ค่าเช่าที่ดิน', 'ค่าเสื่อม-ยานพาหนะ'],
+                datasets: [{
+                    data: [225000, 103209.96, 91255, 60000, 52981.17],
+                    backgroundColor: 'rgba(245, 158, 11, 0.7)',
+                    borderColor: '#f59e0b',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                ...commonOptions,
+                plugins: { legend: { display: false } },
+                scales: { x: { display: false, grid: {display: false} }, y: { grid: {display: false} } }
+            }
+        });
+    </script>
+</body>
+</html>

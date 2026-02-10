@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard สรุปการส่งมอบ - บจก. พัฒนาสิน ไทยเทรดดิ้ง จำกัด</title>
+    <!-- Tailwind CSS: ใช้สำหรับตกแต่งหน้าตา (ไม่ต้องเขียน CSS เอง) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- ApexCharts: ใช้สำหรับสร้างกราฟ -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <!-- Lucide Icons: ไอคอนสวยๆ -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts: ฟอนต์ Sarabun สำหรับภาษาไทย -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Sarabun', sans-serif; }
+        /* ซ่อนปุ่มพิมพ์เมื่อสั่งพิมพ์จริงๆ */
+        @media print {
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen p-4 md:p-8">
+
+    <div class="max-w-7xl mx-auto">
+        <!-- ส่วนหัว (Header) -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="truck" class="text-blue-600"></i>
+                    บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด
+                </h1>
+                <p class="text-slate-500 mt-1 flex items-center gap-2">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    รายงานสรุปผลการส่งมอบสินค้าประจำเดือน มกราคม 2569
+                </p>
+            </div>
+            <div class="flex items-center gap-3 no-print">
+                <div class="px-4 py-2 bg-blue-50 text-blue-700 rounded-lg text-sm font-semibold border border-blue-100">
+                    สถานะ: ปกติ
+                </div>
+                <button onclick="window.print()" class="bg-slate-900 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-800 transition-colors flex items-center gap-2">
+                    <i data-lucide="printer" class="w-4 h-4"></i> พิมพ์รายงาน
+                </button>
+            </div>
+        </header>
+
+        <!-- การ์ด KPI (ตัวเลขสรุป) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <!-- Card 1: จำนวนจัดส่ง -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="p-2.5 rounded-xl border bg-blue-50 text-blue-600 border-blue-100">
+                        <i data-lucide="package" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">รายการ</span>
+                </div>
+                <h3 class="text-slate-500 text-xs font-semibold">จำนวนการจัดส่ง</h3>
+                <div class="mt-0.5"><span class="text-2xl font-bold text-slate-900">665</span></div>
+                <p class="text-[10px] mt-2 text-slate-400 font-medium text-blue-600">ข้อมูลรายเดือน</p>
+            </div>
+
+            <!-- Card 2: On-time Rate -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="p-2.5 rounded-xl border bg-emerald-50 text-emerald-600 border-emerald-100">
+                        <i data-lucide="check-circle" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rate</span>
+                </div>
+                <h3 class="text-slate-500 text-xs font-semibold">ส่งมอบภายใน 3 วัน</h3>
+                <div class="mt-0.5"><span class="text-2xl font-bold text-slate-900">84.36%</span></div>
+                <p class="text-[10px] mt-2 text-slate-400 font-medium">เป้าหมาย: 95%</p>
+            </div>
+
+            <!-- Card 3: Fulfillment -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="p-2.5 rounded-xl border bg-purple-50 text-purple-600 border-purple-100">
+                        <i data-lucide="trending-up" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Rate</span>
+                </div>
+                <h3 class="text-slate-500 text-xs font-semibold">Fulfillment</h3>
+                <div class="mt-0.5"><span class="text-2xl font-bold text-slate-900">96.43%</span></div>
+                <p class="text-[10px] mt-2 text-slate-400 font-medium">เป้าหมาย: 95%</p>
+            </div>
+
+            <!-- Card 4: Next Day -->
+            <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-100">
+                <div class="flex justify-between items-start mb-3">
+                    <div class="p-2.5 rounded-xl border bg-orange-50 text-orange-500 border-orange-100">
+                        <i data-lucide="zap" class="w-5 h-5"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">1-Day</span>
+                </div>
+                <h3 class="text-slate-500 text-xs font-semibold">ความพร้อม Next Day</h3>
+                <div class="mt-0.5"><span class="text-2xl font-bold text-slate-900">33.23%</span></div>
+                <p class="text-[10px] mt-2 text-slate-400 font-medium">จัดส่งได้ใน 1 วัน</p>
+            </div>
+        </div>
+
+        <!-- ส่วนแสดงกราฟ -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <!-- กราฟแท่ง -->
+            <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="clock" class="w-5 h-5 text-slate-400"></i>
+                    การกระจายตัวของระยะเวลาการส่งมอบ (Lead Time)
+                </h2>
+                <div id="barChart" class="h-80 w-full"></div>
+                <p class="mt-4 text-sm text-slate-500 italic">
+                    * เกณฑ์การส่งมอบมาตรฐานของบริษัทคือภายใน 3 วันทำการ
+                </p>
+            </div>
+
+            <!-- กราฟวงกลม -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-slate-400"></i>
+                    สัดส่วนการส่งมอบตรงเวลา
+                </h2>
+                <div id="pieChart" class="h-64 w-full"></div>
+                <div class="space-y-3 mt-4">
+                    <div class="flex items-center justify-between text-sm text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-blue-500"></div> ภายในกำหนด (<=3 วัน)
+                        </div>
+                        <span class="font-semibold">561 รายการ</span>
+                    </div>
+                    <div class="flex items-center justify-between text-sm text-slate-600">
+                        <div class="flex items-center gap-2">
+                            <div class="w-3 h-3 rounded-full bg-red-400"></div> เกินกำหนด (>3 วัน)
+                        </div>
+                        <span class="font-semibold">104 รายการ</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. สรุปปัญหา-แนวทางแก้ไข -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden mb-8">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <h2 class="text-lg font-bold flex items-center gap-2 text-slate-900">
+                    <i data-lucide="clipboard-list" class="text-blue-600"></i>
+                    5. สรุปปัญหา-แนวทางแก้ไข
+                </h2>
+                <span class="text-[10px] bg-slate-100 text-slate-500 px-3 py-1 rounded-full font-bold uppercase tracking-widest">
+                    Action Tracker
+                </span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-slate-50 text-slate-500 text-[11px] font-bold uppercase tracking-wider">
+                            <th class="px-6 py-4 border-b border-slate-100">ลำดับ</th>
+                            <th class="px-6 py-4 border-b border-slate-100">ปัญหา</th>
+                            <th class="px-6 py-4 border-b border-slate-100">สาเหตุ</th>
+                            <th class="px-6 py-4 border-b border-slate-100">แนวทางแก้ไข</th>
+                            <th class="px-6 py-4 border-b border-slate-100">ผู้รับผิดชอบ</th>
+                            <th class="px-6 py-4 border-b border-slate-100 whitespace-nowrap">กำหนดเสร็จ</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100 text-sm">
+                        <!-- Row 1 -->
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-5 font-semibold text-slate-400">1</td>
+                            <td class="px-6 py-5 font-bold text-slate-800">รวบรวมออเดอร์ไม่เต็มคัน</td>
+                            <td class="px-6 py-5 text-slate-600 leading-relaxed max-w-xs">เนื่องจาก คำนวนจากปริมาณรถกับของที่ของส่งยังน้อยกว่าเกณฑ์ที่บรรทุก</td>
+                            <td class="px-6 py-5 text-emerald-700 font-medium bg-emerald-50/30">ต้องหาออเดอร์และร้านลูกค้าเส้นที่ยังน้อยเพิ่ม</td>
+                            <td class="px-6 py-5 font-semibold text-slate-700">พล</td>
+                            <td class="px-6 py-5 text-slate-500 whitespace-nowrap">1-Feb-2026</td>
+                        </tr>
+                        <!-- Row 2 -->
+                        <tr class="hover:bg-slate-50/50 transition-colors">
+                            <td class="px-6 py-5 font-semibold text-slate-400">2</td>
+                            <td class="px-6 py-5 font-bold text-slate-800">รวบรวมรายการไม้ฝา</td>
+                            <td class="px-6 py-5 text-slate-600 leading-relaxed max-w-xs">ออเดอร์ไม้ฝาน้อยต้องบรรทุกให้ได้อย่างน้อย 6 ตัน</td>
+                            <td class="px-6 py-5 text-emerald-700 font-medium bg-emerald-50/30">หาลูกค้ากลุ่มไม้ฝาเพิ่ม</td>
+                            <td class="px-6 py-5 font-semibold text-slate-700">พล</td>
+                            <td class="px-6 py-5 text-slate-500 whitespace-nowrap">1-Feb-2026</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Footer / ข้อเสนอแนะ -->
+        <footer class="bg-slate-900 text-white p-8 rounded-3xl shadow-xl border border-slate-800">
+            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
+                <i data-lucide="users" class="w-6 h-6 text-blue-400"></i>
+                ข้อเสนอแนะและทิศทางถัดไป
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <h4 class="text-blue-400 font-bold mb-2">จุดแข็ง</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        การจัดส่งแบบ "Next Day" (1 วัน) มีประสิทธิภาพสูงถึง 33% ช่วยสร้างความพึงพอใจให้ลูกค้ากลุ่มเร่งด่วนได้ดี
+                    </p>
+                </div>
+                <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <h4 class="text-amber-400 font-bold mb-2">โอกาส</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        การขยายฐานลูกค้าเส้นทางเดิม (Routes Optimization) จะช่วยแก้ปัญหารถไม่เต็มคัน และเพิ่มกำไรต่อเที่ยวได้
+                    </p>
+                </div>
+                <div class="p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <h4 class="text-emerald-400 font-bold mb-2">เป้าหมายกุมภาพันธ์</h4>
+                    <p class="text-sm text-slate-400 leading-relaxed">
+                        ผลักดัน On-time Rate ให้แตะ 95% โดยการลดปัญหาคอขวดในกลุ่มสินค้าไม้ฝาและการบริหารเที่ยวรถ
+                    </p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // เริ่มต้นการทำงานของไอคอน
+        lucide.createIcons();
+
+        // 1. ตั้งค่ากราฟแท่ง (Lead Time)
+        var barOptions = {
+            series: [{
+                name: 'จำนวนรายการ',
+                data: [221, 191, 149, 104] // แก้ไขตัวเลขที่นี่เมื่อมีข้อมูลใหม่
+            }],
+            chart: {
+                type: 'bar',
+                height: 320,
+                toolbar: { show: false },
+                fontFamily: 'Sarabun'
+            },
+            colors: ['#10b981', '#34d399', '#6ee7b7', '#ef4444'],
+            plotOptions: {
+                bar: {
+                    borderRadius: 8,
+                    distributed: true,
+                    columnWidth: '60%'
+                }
+            },
+            dataLabels: { enabled: false },
+            xaxis: {
+                categories: ['1 วัน', '2 วัน', '3 วัน', 'เกิน 3 วัน'],
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: { style: { colors: '#64748b' } }
+            },
+            grid: {
+                borderColor: '#f1f5f9',
+                strokeDashArray: 4,
+                yaxis: { lines: { show: true } }
+            },
+            tooltip: { theme: 'light' }
+        };
+        var barChart = new ApexCharts(document.querySelector("#barChart"), barOptions);
+        barChart.render();
+
+        // 2. ตั้งค่ากราฟวงกลม (Pie Chart)
+        var pieOptions = {
+            series: [561, 104], // แก้ไขตัวเลข [ตรงเวลา, ล่าช้า] ที่นี่
+            chart: {
+                type: 'donut',
+                height: 300,
+                fontFamily: 'Sarabun'
+            },
+            labels: ['ภายในกำหนด (<=3 วัน)', 'เกินกำหนด (>3 วัน)'],
+            colors: ['#3b82f6', '#f87171'],
+            plotOptions: {
+                pie: {
+                    donut: {
+                        size: '70%',
+                        labels: {
+                            show: true,
+                            total: {
+                                show: true,
+                                label: 'รวมการจัดส่ง',
+                                formatter: function() { return '665' } // แก้ไขยอดรวมที่นี่
+                            }
+                        }
+                    }
+                }
+            },
+            legend: { show: false },
+            stroke: { width: 0 },
+            dataLabels: { enabled: false }
+        };
+        var pieChart = new ApexCharts(document.querySelector("#pieChart"), pieOptions);
+        pieChart.render();
+    </script>
+</body>
+</html>

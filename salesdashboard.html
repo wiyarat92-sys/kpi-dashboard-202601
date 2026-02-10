@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปยอดขาย - บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</title>
+    <!-- Tailwind CSS (ใช้ CDN เพื่อความสะดวก) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Font: Sarabun -->
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body { font-family: 'Sarabun', sans-serif; background-color: #f8fafc; }
+        .transition-all-300 { transition: all 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+    </style>
+</head>
+<body class="text-slate-800 p-4 md:p-8 min-h-screen">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- Header Section -->
+        <header class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4 animate-fade-in">
+            <div>
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-3">
+                    <div class="p-2 bg-blue-600 rounded-lg text-white shadow-lg shadow-blue-200">
+                        <i data-lucide="layout-dashboard" class="w-6 h-6 md:w-8 md:h-8"></i>
+                    </div>
+                    บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด
+                </h1>
+                <p class="text-slate-500 mt-2 flex items-center gap-2 text-base md:text-lg">
+                    <i data-lucide="calendar-days" class="w-5 h-5 text-blue-500"></i> 
+                    สรุปผลการดำเนินงาน ประจำเดือน มกราคม (ทำงาน 26 วัน)
+                </p>
+            </div>
+
+            <!-- Dropdown เลือกสาขา -->
+            <div class="relative w-full md:w-72">
+                <label class="block text-xs font-semibold text-slate-400 uppercase mb-1 ml-1">เลือกรายการ / สาขา</label>
+                <div class="relative">
+                    <select id="branchSelector" class="w-full appearance-none bg-white border border-slate-200 text-slate-700 py-3 px-4 pr-10 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-sm cursor-pointer transition-all-300 font-medium text-lg">
+                        <option value="all">สรุปยอดขายรวมทั้งหมด</option>
+                        <option value="retail">ขายปลีก</option>
+                        <option value="wholesale">ขายส่ง</option>
+                        <option value="nongkhai">หนองคาย</option>
+                    </select>
+                    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                        <i data-lucide="chevron-down" class="w-5 h-5"></i>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- KPI Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 animate-fade-in" style="animation-delay: 0.1s;">
+            
+            <!-- Card 1: Sales Amount -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all-300 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="relative">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-blue-100 text-blue-600 rounded-lg"><i data-lucide="banknote" class="w-6 h-6"></i></div>
+                        <span id="badgeStatus" class="px-3 py-1 text-xs font-bold rounded-full bg-slate-100 text-slate-500">Normal</span>
+                    </div>
+                    <p class="text-slate-500 text-sm font-medium">ยอดขายที่ทำได้ (Actual)</p>
+                    <h3 id="displayActual" class="text-3xl font-bold text-slate-800 mt-1">฿0</h3>
+                    <div class="mt-4 pt-4 border-t border-slate-50 flex justify-between items-center">
+                        <span id="displayTargetSmall" class="text-xs text-slate-400">เป้า: ฿0</span>
+                        <div class="flex items-center gap-1 text-sm font-bold" id="textPercentParams">
+                            <span id="displayPercentSmall">0%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Days Met Target -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all-300 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="relative">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-emerald-100 text-emerald-600 rounded-lg"><i data-lucide="check-circle-2" class="w-6 h-6"></i></div>
+                    </div>
+                    <p class="text-slate-500 text-sm font-medium">จำนวนวันที่ได้ตามเป้า</p>
+                    <h3 class="text-3xl font-bold text-slate-800 mt-1"><span id="displayDays">0</span> <span class="text-lg text-slate-400 font-normal">/ 26 วัน</span></h3>
+                    <div class="mt-4 pt-4 border-t border-slate-50">
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div id="barDays" class="bg-emerald-500 h-full rounded-full transition-all duration-1000" style="width: 0%"></div>
+                        </div>
+                        <p class="text-right text-xs text-emerald-600 font-bold mt-1" id="textDaysPercent">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Daily Target -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 hover:shadow-md transition-all-300 relative overflow-hidden group">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-bl-full -mr-4 -mt-4 transition-transform group-hover:scale-110"></div>
+                <div class="relative">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="p-2 bg-amber-100 text-amber-600 rounded-lg"><i data-lucide="target" class="w-6 h-6"></i></div>
+                    </div>
+                    <p class="text-slate-500 text-sm font-medium">ยอดสะสมเป้าหมายต่อวัน</p>
+                    <h3 id="displayDaily" class="text-3xl font-bold text-slate-800 mt-1">฿0</h3>
+                    <div class="mt-4 pt-4 border-t border-slate-50 text-xs text-slate-400 flex items-center gap-1">
+                        <i data-lucide="info" class="w-3 h-3"></i> เกณฑ์ขั้นต่ำต่อวันเพื่อให้บรรลุเป้า
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 animate-fade-in" style="animation-delay: 0.2s;">
+            
+            <!-- Left Column: Detailed Chart -->
+            <div class="lg:col-span-2 space-y-6">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-xl text-slate-800 flex items-center gap-2">
+                            <i data-lucide="bar-chart-2" class="text-blue-600"></i>
+                            ผลการดำเนินงาน: <span id="currentBranchName" class="text-blue-600">รวมทั้งหมด</span>
+                        </h3>
+                    </div>
+
+                    <!-- Main Progress Bar -->
+                    <div class="mb-8">
+                        <div class="flex justify-between text-sm mb-2 uppercase tracking-wide font-bold">
+                            <span class="text-slate-500">ความคืบหน้า (Achievement)</span>
+                            <span id="mainPercentText" class="text-blue-600 text-lg">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-8 rounded-full overflow-hidden p-1 shadow-inner">
+                            <div id="mainProgressBar" class="h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r from-blue-500 to-indigo-600 flex items-center justify-end pr-3" style="width: 0%"></div>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                            <p class="text-xs text-slate-500 font-bold uppercase">ยอดขายจริง (Actual)</p>
+                            <p id="boxActual" class="text-2xl font-bold text-slate-800 mt-1">฿0</p>
+                        </div>
+                        <div class="bg-slate-50 p-5 rounded-xl border border-slate-100">
+                            <p id="boxGapLabel" class="text-xs text-slate-500 font-bold uppercase">ส่วนต่าง (Gap)</p>
+                            <p id="boxGap" class="text-2xl font-bold text-rose-500 mt-1">฿0</p>
+                        </div>
+                    </div>
+
+                    <!-- System Analysis Box -->
+                    <div class="bg-blue-50 border border-blue-100 rounded-xl p-5 flex gap-4 items-start">
+                        <div class="bg-blue-100 p-2 rounded-full shrink-0">
+                            <i data-lucide="lightbulb" class="text-blue-600 w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-blue-900 mb-1">บทวิเคราะห์จากระบบ</h4>
+                            <p id="systemInsight" class="text-blue-800/80 text-sm leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Branch List -->
+            <div class="lg:col-span-1">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 h-full">
+                    <h3 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
+                        <i data-lucide="building" class="w-5 h-5 text-slate-400"></i> รายการอื่นๆ
+                    </h3>
+                    <div id="branchList" class="space-y-3">
+                        <!-- List items generated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="mt-12 text-center text-slate-400 text-sm pb-8">
+            <p>Copyright © 2024 บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด | Sales Dashboard System</p>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- 1. ข้อมูล (Data Configuration) ---
+        // ปรับปรุงข้อมูลตามที่ระบุล่าสุด
+        const salesData = [
+            { 
+                id: 'all', 
+                name: 'สรุปยอดขายรวมทั้งหมด', 
+                actual: 12925623, // แก้ไขแล้ว
+                target: 15000000, 
+                dailyTarget: 576923, 
+                daysMet: 26 
+            },
+            { 
+                id: 'retail', 
+                name: 'ขายปลีก', 
+                actual: 504113, 
+                target: 600000, 
+                dailyTarget: 23077, 
+                daysMet: 4 
+            },
+            { 
+                id: 'wholesale', 
+                name: 'ขายส่ง', 
+                actual: 11406730, 
+                target: 13600000, 
+                dailyTarget: 523077, 
+                daysMet: 6 
+            },
+            { 
+                id: 'nongkhai', 
+                name: 'หนองคาย', 
+                actual: 1014780, // แก้ไขแล้ว
+                target: 800000, 
+                dailyTarget: 30769, 
+                daysMet: 16 
+            }
+        ];
+
+        const workingDays = 26;
+        let currentId = 'all';
+
+        // --- 2. ฟังก์ชันช่วยจัดรูปแบบตัวเลข ---
+        const formatCurrency = (num) => {
+            return new Intl.NumberFormat('th-TH').format(num);
+        };
+
+        // --- 3. ฟังก์ชันหลักในการแสดงผล ---
+        function updateDashboard() {
+            const data = salesData.find(d => d.id === currentId);
+            if (!data) return;
+
+            const percent = (data.actual / data.target) * 100;
+            const gap = data.target - data.actual;
+            const daysPercent = (data.daysMet / workingDays) * 100;
+
+            // UI Text Updates
+            document.getElementById('currentBranchName').innerText = data.name;
+            document.getElementById('displayActual').innerText = `฿${formatCurrency(data.actual)}`;
+            document.getElementById('displayTargetSmall').innerText = `เป้าหมาย: ฿${formatCurrency(data.target)}`;
+            document.getElementById('displayDaily').innerText = `฿${formatCurrency(data.dailyTarget)}`;
+            document.getElementById('displayDays').innerText = data.daysMet;
+            
+            // Badge & Colors
+            const badgeEl = document.getElementById('badgeStatus');
+            const percentSmallEl = document.getElementById('displayPercentSmall');
+            const textPercentParamsEl = document.getElementById('textPercentParams');
+            
+            percentSmallEl.innerText = `${percent.toFixed(2)}%`;
+
+            if (percent >= 100) {
+                badgeEl.className = 'px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-700 flex items-center gap-1';
+                badgeEl.innerHTML = '<i data-lucide="trending-up" class="w-3 h-3"></i> เกินเป้าหมาย';
+                textPercentParamsEl.className = 'flex items-center gap-1 text-sm font-bold text-emerald-600';
+            } else {
+                badgeEl.className = 'px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-700 flex items-center gap-1';
+                badgeEl.innerHTML = '<i data-lucide="activity" class="w-3 h-3"></i> กำลังดำเนินการ';
+                textPercentParamsEl.className = 'flex items-center gap-1 text-sm font-bold text-blue-600';
+            }
+
+            // Progress Bars
+            document.getElementById('barDays').style.width = `${daysPercent}%`;
+            document.getElementById('textDaysPercent').innerText = `${daysPercent.toFixed(0)}%`;
+
+            const mainProgressBar = document.getElementById('mainProgressBar');
+            mainProgressBar.style.width = `${Math.min(percent, 100)}%`;
+            document.getElementById('mainPercentText').innerText = `${percent.toFixed(2)}%`;
+
+            if (percent >= 100) {
+                mainProgressBar.className = 'h-full rounded-full transition-all duration-1000 ease-out bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]';
+            } else if (percent >= 80) {
+                mainProgressBar.className = 'h-full rounded-full transition-all duration-1000 ease-out bg-gradient-to-r from-blue-500 to-indigo-600';
+            } else {
+                mainProgressBar.className = 'h-full rounded-full transition-all duration-1000 ease-out bg-rose-500';
+            }
+
+            // Gap Analysis
+            document.getElementById('boxActual').innerText = `฿${formatCurrency(data.actual)}`;
+            const gapEl = document.getElementById('boxGap');
+            const gapLabel = document.getElementById('boxGapLabel');
+            
+            if (gap > 0) {
+                gapLabel.innerText = "ยังขาดอีก (Gap)";
+                gapEl.innerText = `-฿${formatCurrency(gap)}`;
+                gapEl.className = "text-2xl font-bold text-rose-500 mt-1";
+            } else {
+                gapLabel.innerText = "เกินเป้าหมาย (Surplus)";
+                gapEl.innerText = `+฿${formatCurrency(Math.abs(gap))}`;
+                gapEl.className = "text-2xl font-bold text-emerald-500 mt-1";
+            }
+
+            // System Insight
+            const insightEl = document.getElementById('systemInsight');
+            if (currentId === 'nongkhai') {
+                insightEl.innerText = `ยอดเยี่ยม! สาขาหนองคายทำผลงานได้โดดเด่น ทะลุเป้าหมายไปถึง ${percent.toFixed(1)}% และมีจำนวนวันที่เข้าเป้าสูงถึง 16 วัน ถือเป็นต้นแบบที่ดี`;
+            } else if (percent >= 100) {
+                insightEl.innerText = "ผลงานโดยรวมยอดเยี่ยม สามารถทำได้ตามเป้าหมายที่วางไว้ การรักษาระดับยอดขายนี้ไว้จะช่วยสร้างฐานที่มั่นคงสำหรับเดือนถัดไป";
+            } else if (percent >= 80) {
+                insightEl.innerText = "ผลงานอยู่ในเกณฑ์ดีแต่ยังไม่ถึงเป้าหมาย เหลืออีกเพียงเล็กน้อย ควรเร่งกิจกรรมส่งเสริมการขายในช่วงวันทำการที่เหลือ";
+            } else {
+                insightEl.innerText = "ยอดขายยังค่อนข้างห่างจากเป้าหมาย จำเป็นต้องวิเคราะห์หาสาเหตุและปรับกลยุทธ์เร่งด่วนเพื่อเพิ่มยอดต่อวัน";
+            }
+
+            lucide.createIcons();
+            renderBranchList();
+        }
+
+        // --- 4. Render Menu ---
+        function renderBranchList() {
+            const container = document.getElementById('branchList');
+            container.innerHTML = ''; 
+
+            salesData.forEach(item => {
+                if (item.id === 'all') return;
+
+                const p = (item.actual / item.target) * 100;
+                const isActive = currentId === item.id;
+                
+                const div = document.createElement('div');
+                div.className = `p-3 rounded-xl border cursor-pointer transition-all flex justify-between items-center group ${isActive ? 'bg-blue-50 border-blue-200 ring-1 ring-blue-200' : 'bg-white border-slate-100 hover:border-blue-300'}`;
+                div.onclick = () => {
+                    currentId = item.id;
+                    document.getElementById('branchSelector').value = item.id;
+                    updateDashboard();
+                };
+
+                div.innerHTML = `
+                    <div>
+                        <div class="font-bold text-sm ${isActive ? 'text-blue-700' : 'text-slate-700'}">${item.name}</div>
+                        <div class="text-xs text-slate-400 mt-0.5">฿${formatCurrency(item.actual)}</div>
+                    </div>
+                    <div class="text-right">
+                         <span class="inline-block px-2 py-0.5 rounded text-[10px] font-bold ${p >= 100 ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}">
+                            ${p.toFixed(0)}%
+                        </span>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        document.getElementById('branchSelector').addEventListener('change', function() {
+            currentId = this.value;
+            updateDashboard();
+        });
+
+        // Start
+        window.onload = () => {
+            updateDashboard();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaizen Executive Summary - Jan 2026</title>
+    <!-- Tailwind CSS: สำหรับจัด Layout และความสวยงาม -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: ฟอนต์ Kanit สวยๆ อ่านง่าย -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js: สำหรับสร้างกราฟ -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons: ไอคอนประกอบ -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f8fafc; /* พื้นหลังสีเทาอ่อนสบายตา */
+        }
+        .gradient-header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="text-slate-900 antialiased">
+
+    <div class="min-h-screen p-4 md:p-8 lg:p-12">
+        <!-- Header Section -->
+        <div class="max-w-7xl mx-auto mb-10">
+            <div class="bg-white rounded-3xl p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+                <!-- Decorative Background Element -->
+                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50 rounded-full -mr-16 -mt-16 opacity-50 z-0"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">Jan 2026 Report</span>
+                        <span class="text-slate-400 text-sm">|</span>
+                        <span class="text-slate-500 text-sm font-medium">บริษัท พัฒนาสิน ไทยเทรดดิ้ง จำกัด</span>
+                    </div>
+                    <h1 class="text-3xl md:text-4xl font-extrabold text-slate-800 tracking-tight mt-2">
+                        Kaizen Executive Dashboard
+                    </h1>
+                    <p class="text-slate-500 text-lg mt-2">สรุปภาพรวมการเสนอแนะหัวข้อไคเซ็นเพื่อการพัฒนาองค์กร</p>
+                </div>
+
+                <div class="relative z-10 flex items-center gap-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-sm text-slate-400 font-medium">Total Proposals</p>
+                        <p class="text-3xl font-black text-slate-800">7 <span class="text-lg font-normal text-slate-400">หัวข้อ</span></p>
+                    </div>
+                    <div class="bg-blue-600 text-white p-4 rounded-2xl shadow-lg shadow-blue-200">
+                        <i data-lucide="file-bar-chart-2" class="w-8 h-8"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto space-y-8">
+            <!-- Key Metrics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Metric 1 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card-hover transition-all duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-blue-50 p-3 rounded-xl">
+                            <i data-lucide="timer" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                        <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">71%</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">ลดเวลางาน</h3>
+                    <p class="text-sm text-slate-500 mt-1">เป้าหมายหลัก (5 หัวข้อ)</p>
+                </div>
+
+                <!-- Metric 2 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card-hover transition-all duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-emerald-50 p-3 rounded-xl">
+                            <i data-lucide="shield-check" class="w-6 h-6 text-emerald-600"></i>
+                        </div>
+                        <span class="text-xs font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-lg">Safety</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">1 โครงการ</h3>
+                    <p class="text-sm text-slate-500 mt-1">ด้านความปลอดภัย</p>
+                </div>
+
+                <!-- Metric 3 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card-hover transition-all duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-purple-50 p-3 rounded-xl">
+                            <i data-lucide="users" class="w-6 h-6 text-purple-600"></i>
+                        </div>
+                        <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-lg">Active</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">4 ระดับ</h3>
+                    <p class="text-sm text-slate-500 mt-1">ผจก./หก. ร่วมเสนอแนะ</p>
+                </div>
+
+                <!-- Metric 4 -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 card-hover transition-all duration-300">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="bg-rose-50 p-3 rounded-xl">
+                            <i data-lucide="trending-up" class="w-6 h-6 text-rose-600"></i>
+                        </div>
+                        <span class="text-xs font-bold text-rose-600 bg-rose-50 px-2 py-1 rounded-lg">Growth</span>
+                    </div>
+                    <h3 class="text-2xl font-bold text-slate-800">5 หัวข้อ</h3>
+                    <p class="text-sm text-slate-500 mt-1">เพิ่มยอดขาย/คุณภาพ</p>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Bar Chart -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1 h-6 bg-blue-500 rounded-full"></div>
+                        <h3 class="text-lg font-bold text-slate-800">วัตถุประสงค์ของโครงการ</h3>
+                    </div>
+                    <div class="h-[300px] w-full">
+                        <canvas id="objectiveChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Doughnut Chart -->
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-1 h-6 bg-rose-500 rounded-full"></div>
+                        <h3 class="text-lg font-bold text-slate-800">พื้นที่การปรับปรุง (Location)</h3>
+                    </div>
+                    <div class="h-[300px] w-full flex justify-center">
+                        <canvas id="locationChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+                <div class="p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-slate-800">ทำเนียบรายละเอียดโครงการ</h3>
+                        <p class="text-sm text-slate-500 mt-1">รายการข้อเสนอแนะทั้งหมด 7 รายการ</p>
+                    </div>
+                    <button class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-blue-600 transition-colors">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        Export Data
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50/50 border-y border-slate-100">
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ID / ผู้เสนอ</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">หัวข้อการปรับปรุง</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">ประเภท</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-wider">สถานที่</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody" class="divide-y divide-slate-100">
+                            <!-- Javascript will inject rows here -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="p-4 bg-slate-50 text-center border-t border-slate-100">
+                    <p class="text-xs text-slate-400">Generated by Kaizen Executive Dashboard System</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. ข้อมูล (Data) ---
+        const kaizenData = [
+            { id: 'KZ-2601-02', name: 'น.ส.ภคพร สีแวงนอก', pos: 'หก.แผนกบัญชี/การเงิน', topic: 'ส่วนลดพิเศษชำระเงินตามเงื่อนไข', cats: ['เพิ่มคุณภาพ'], loc: 'สำนักงาน' },
+            { id: 'KZ-2601-03', name: 'น.ส.วิญารัตน์ พิบาลขัน', pos: 'ผจก.ฝ่ายบริหาร', topic: 'การจัดการสินค้า Dead Stock', cats: ['เพิ่มยอดขาย', 'ลดเวลางาน'], loc: 'คลังสินค้า' },
+            { id: 'KZ-2601-04', name: 'น.ส.วิชิตา สีแวงนอก', pos: 'พนักงานจัดซื้อ', topic: 'ปรับปรุงจุดสั่งซื้อสินค้า ROP', cats: ['ลดต้นทุน', 'ลดเวลางาน', 'เพิ่มประสิทธิภาพ'], loc: 'คลังสินค้า' },
+            { id: 'KZ-2601-05', name: 'น.ส.ณัฐวริยา คงกล้า', pos: 'หก.แผนกขาย', topic: 'การสื่อสารรับออเดอร์ผิดพลาด', cats: ['เพิ่มคุณภาพ', 'ลดเวลางาน'], loc: 'สำนักงาน' },
+            { id: 'KZ-2601-06', name: 'นายธงชัย คุยดี', pos: 'ผจก.ฝ่ายปฏิบัติการ', topic: 'ความปลอดภัยการใช้งานของบันไดขึ้นท่อ', cats: ['เพิ่มความปลอดภัย'], loc: 'ร้านพัฒนาสิน' },
+            { id: 'KZ-2601-07', name: 'น.ส.หนึ่งฤทัย บุตรดีคำ', pos: 'พนักงานขายปลีก', topic: 'ลดหนี้สินค้าขายปลีกหน้าร้าน', cats: ['เพิ่มยอดขาย', 'ลดเวลางาน', 'เพิ่มคุณภาพ'], loc: 'ขายปลีกหน้าร้าน' },
+            { id: 'KZ-2601-08', name: 'นายวิชัย ทองเหล็ก', pos: 'พนักงานขับรถ', topic: 'จัดเรียงอุปกรณ์น้ำไทย ตามหมวดหมู่/ขนาด', cats: ['ลดเวลางาน'], loc: 'โกดังลูกเก่า' }
+        ];
+
+        // --- 2. สร้างตาราง (Table Generation) ---
+        const tableBody = document.getElementById('tableBody');
+        
+        kaizenData.forEach(item => {
+            const row = document.createElement('tr');
+            row.className = 'hover:bg-blue-50/30 transition-colors group';
+            
+            // สร้าง Badge สีตามประเภท
+            const badges = item.cats.map(c => {
+                let colorClass = 'bg-slate-100 text-slate-600 border-slate-200'; // Default
+                if(c.includes('ลดเวลางาน')) colorClass = 'bg-blue-50 text-blue-600 border-blue-100';
+                if(c.includes('ปลอดภัย')) colorClass = 'bg-emerald-50 text-emerald-600 border-emerald-100';
+                if(c.includes('ยอดขาย')) colorClass = 'bg-rose-50 text-rose-600 border-rose-100';
+                if(c.includes('คุณภาพ')) colorClass = 'bg-indigo-50 text-indigo-600 border-indigo-100';
+                
+                return `<span class="px-2 py-1 rounded-md text-[10px] font-bold border ${colorClass} mr-1 mb-1 inline-block whitespace-nowrap">${c}</span>`;
+            }).join('');
+
+            row.innerHTML = `
+                <td class="px-6 py-4 align-top">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] font-mono font-bold text-slate-400 mb-1 group-hover:text-blue-500 transition-colors">${item.id}</span>
+                        <span class="text-sm font-bold text-slate-800">${item.name}</span>
+                        <span class="text-xs text-slate-500 font-medium">${item.pos}</span>
+                    </div>
+                </td>
+                <td class="px-6 py-4 align-top">
+                    <p class="text-sm font-medium text-slate-700 leading-relaxed">${item.topic}</p>
+                </td>
+                <td class="px-6 py-4 align-top">
+                    <div class="flex flex-wrap">${badges}</div>
+                </td>
+                <td class="px-6 py-4 align-top">
+                    <div class="flex items-center gap-1.5 text-slate-500">
+                        <i data-lucide="map-pin" class="w-3.5 h-3.5"></i>
+                        <span class="text-xs font-medium">${item.loc}</span>
+                    </div>
+                </td>
+            `;
+            tableBody.appendChild(row);
+        });
+
+        // --- 3. สร้างกราฟ (Charts Configuration) ---
+        window.onload = function() {
+            // เรียกใช้งาน Icons
+            lucide.createIcons();
+
+            // Config ทั่วไปของกราฟ
+            Chart.defaults.font.family = "'Kanit', sans-serif";
+            Chart.defaults.color = '#64748b';
+
+            // 3.1 Bar Chart (วัตถุประสงค์)
+            const ctx1 = document.getElementById('objectiveChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['ลดเวลางาน', 'เพิ่มคุณภาพ', 'เพิ่มยอดขาย', 'ความปลอดภัย', 'ลดต้นทุน'],
+                    datasets: [{
+                        label: 'จำนวนหัวข้อ',
+                        data: [5, 3, 2, 1, 1],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.8)', // Blue
+                            'rgba(99, 102, 241, 0.8)', // Indigo
+                            'rgba(244, 63, 94, 0.8)',  // Rose
+                            'rgba(16, 185, 129, 0.8)', // Emerald
+                            'rgba(245, 158, 11, 0.8)'  // Amber
+                        ],
+                        borderRadius: 6,
+                        barThickness: 'flex',
+                        maxBarThickness: 40
+                    }]
+                },
+                options: {
+                    indexAxis: 'y', // กราฟแนวนอน
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { display: false, drawBorder: false },
+                            ticks: { precision: 0 }
+                        },
+                        y: { 
+                            grid: { display: false, drawBorder: false } 
+                        }
+                    }
+                }
+            });
+
+            // 3.2 Doughnut Chart (สถานที่)
+            const ctx2 = document.getElementById('locationChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['คลังสินค้า/โกดัง', 'สำนักงาน', 'หน้าร้าน/ปฏิบัติการ'],
+                    datasets: [{
+                        data: [3, 2, 2],
+                        backgroundColor: [
+                            '#3b82f6', // Blue
+                            '#6366f1', // Indigo
+                            '#f43f5e'  // Rose
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        };
+    </script>
+</body>
+</html>
